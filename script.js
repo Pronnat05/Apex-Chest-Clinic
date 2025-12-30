@@ -6,15 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalDetails = document.getElementById('modalDetails');
     let selectedSlotText = "";
 
-    // 1. Function to Check and Disable Slots (Booked or Doctor-Blocked)
+    // 1. Function to Check and Disable Slots (Cloud-Sync)
     function updateSlotAvailability() {
         const selectedDate = dateInput.value;
         if (!selectedDate) return;
-
-        // Fetch data from storage
-        const allAppointments = JSON.parse(localStorage.getItem('apexAppointments')) || [];
-        const blockedByDoctor = JSON.parse(localStorage.getItem('blockedSlots')) || {};
-        const dailyBlocked = blockedByDoctor[selectedDate] || [];
 
         // Reset all slots to default state first
         slots.forEach(slot => {
@@ -22,35 +17,39 @@ document.addEventListener('DOMContentLoaded', function() {
             slot.classList.remove('active');
             slot.disabled = false;
             slot.style.pointerEvents = "auto";
-            // Restore original text if it was changed
             if(slot.getAttribute('data-time')) {
                 slot.innerText = slot.getAttribute('data-time');
             }
         });
 
-        // Loop through slots to apply restrictions
-        slots.forEach(slot => {
-            const slotTime = slot.innerText.trim();
-            
-            // Check if booked by another patient
-            const isAlreadyBooked = allAppointments.some(app => 
-                app.date === selectedDate && app.slot === slotTime
-            );
+        // FETCH FROM FIREBASE: Appointments
+        database.ref('appointments').orderByChild('date').equalTo(selectedDate).on('value', (snapshot) => {
+            const appointments = snapshot.val() || {};
+            const bookedTimes = Object.values(appointments).map(a => a.slot);
 
-            // Check if manually blocked by Dr. Gaurav
-            const isBlockedByDoc = dailyBlocked.includes(slotTime);
+            // FETCH FROM FIREBASE: Doctor Blocked Slots
+            database.ref('blockedSlots/' + selectedDate).on('value', (blockSnapshot) => {
+                const dailyBlocked = blockSnapshot.val() || [];
 
-            if (isAlreadyBooked || isBlockedByDoc) {
-                slot.classList.add('booked');
-                slot.disabled = true;
-                slot.style.pointerEvents = "none";
-                
-                // Store original time and update text for clarity
-                if(!slot.getAttribute('data-time')) {
-                    slot.setAttribute('data-time', slotTime);
-                }
-                slot.innerText = isBlockedByDoc ? "Unavailable" : "Booked";
-            }
+                // Loop through slots to apply restrictions
+                slots.forEach(slot => {
+                    const slotTime = slot.innerText.trim();
+                    
+                    const isAlreadyBooked = bookedTimes.includes(slotTime);
+                    const isBlockedByDoc = dailyBlocked.includes(slotTime);
+
+                    if (isAlreadyBooked || isBlockedByDoc) {
+                        slot.classList.add('booked');
+                        slot.disabled = true;
+                        slot.style.pointerEvents = "none";
+                        
+                        if(!slot.getAttribute('data-time')) {
+                            slot.setAttribute('data-time', slotTime);
+                        }
+                        slot.innerText = isBlockedByDoc ? "Unavailable" : "Booked";
+                    }
+                });
+            });
         });
     }
 
@@ -61,13 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
     slots.forEach(slot => {
         slot.addEventListener('click', function() {
             if (this.classList.contains('booked')) return;
-
-            // Clear previous selection
             slots.forEach(s => s.classList.remove('active'));
-            
-            // Set new selection
             this.classList.add('active');
-            selectedSlotText = this.innerText;
+            selectedSlotText = this.getAttribute('data-time') || this.innerText;
         });
     });
 
@@ -93,23 +88,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     date,
                     slot: selectedSlotText,
                     report: fileData,
-                    status: "Pending", // Default status
-                    timestamp: new Date().getTime()
+                    status: "Pending",
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
                 };
 
-                // Save to LocalStorage
-                let appointments = JSON.parse(localStorage.getItem('apexAppointments')) || [];
-                appointments.push(newAppointment);
-                localStorage.setItem('apexAppointments', JSON.stringify(appointments));
+                // SAVE TO FIREBASE instead of LocalStorage
+                database.ref('appointments').push(newAppointment)
+                    .then(() => {
+                        // Show Success Modal
+                        modalDetails.innerText = `Confirmed for ${name} on ${date} at ${selectedSlotText}.`;
+                        modal.style.display = 'flex';
 
-                // Show Success Modal
-                modalDetails.innerText = `Confirmed for ${name} on ${date} at ${selectedSlotText}.`;
-                modal.style.display = 'flex';
-
-                // Reset Form
-                bookingForm.reset();
-                selectedSlotText = "";
-                updateSlotAvailability();
+                        // Reset Form
+                        bookingForm.reset();
+                        selectedSlotText = "";
+                        updateSlotAvailability();
+                    })
+                    .catch((error) => {
+                        alert("Error saving appointment: " + error.message);
+                    });
             };
 
             if (reportFile) {
@@ -126,13 +123,15 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'none';
     };
 });
+
+// Smooth Scrolling Logic
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
             window.scrollTo({
-                top: target.offsetTop - 70, // Adjust for navbar height
+                top: target.offsetTop - 70,
                 behavior: 'smooth'
             });
         }
