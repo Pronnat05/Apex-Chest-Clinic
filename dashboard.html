@@ -6,6 +6,25 @@
     <title>Apex Dashboard | Dr. Gaurav</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBoTvNhGtr-Yrl_TJHRZpqXztKxEujUXUs",
+        authDomain: "apexclinic-fd968.firebaseapp.com",
+        databaseURL: "https://apexclinic-fd968-default-rtdb.firebaseio.com",
+        projectId: "apexclinic-fd968",
+        storageBucket: "apexclinic-fd968.firebasestorage.app",
+        messagingSenderId: "975085933456",
+        appId: "1:975085933456:web:93a407eac251c7abb7d915",
+        measurementId: "G-4K3M1CJGGQ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    // Use 'var' to ensure it's globally accessible to dashboard-script.js
+    var database = firebase.database(); 
+</script>
     <style>
         body {
             background: linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)), 
