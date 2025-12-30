@@ -6,6 +6,7 @@ if (localStorage.getItem('isDoctorLoggedIn') !== 'true') {
 const allClinicSlots = ["08:00 AM", "08:30 AM", "09:00 AM", "09:30 AM", "10:00 AM", "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM", "07:00 PM", "07:30 PM", "08:00 PM"];
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Check for midnight cleanup logic (locally managed but affects cloud visibility)
     autoClearOldVisitedPatients();
     
     // Set Date Display
@@ -21,87 +22,90 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.setItem('welcomeShown', 'true');
     }
 
-    renderTable();
+    // FIREBASE REAL-TIME LISTENER: Fetch Appointments
+    database.ref('appointments').on('value', (snapshot) => {
+        const data = snapshot.val();
+        let appts = [];
+        for (let id in data) {
+            appts.push({ firebaseId: id, ...data[id] });
+        }
+        // Store locally for search filtering without refetching
+        window.allAppts = appts;
+        renderTable(appts);
+    });
 });
 
-// 2. Midnight Cleanup Logic
+// 2. Midnight Cleanup Logic (Cloud Aware)
 function autoClearOldVisitedPatients() {
     const today = new Date().toISOString().split('T')[0];
     const lastCleanup = localStorage.getItem('lastCleanupDate');
 
     if (lastCleanup !== today) {
-        let allAppointments = JSON.parse(localStorage.getItem('apexAppointments')) || [];
-        const updated = allAppointments.filter(app => app.status !== "Completed");
-        localStorage.setItem('apexAppointments', JSON.stringify(updated));
+        // We only clear "Completed" status from our view, 
+        // but for a clean dashboard, we can simply update the cleanup date locally.
         localStorage.setItem('lastCleanupDate', today);
     }
 }
 
-// 3. Slot Availability Manager (NEW)
+// 3. Slot Availability Manager (Firebase Integrated)
 window.loadAvailability = function() {
     const date = document.getElementById('manage-date').value;
     const container = document.getElementById('slot-manager-container');
     if (!date) return;
 
-    // Get blocked slots from storage
-    const blockedData = JSON.parse(localStorage.getItem('blockedSlots')) || {};
-    const dailyBlocked = blockedData[date] || [];
-
-    container.innerHTML = "";
-    
-    allClinicSlots.forEach(slot => {
-        const isBlocked = dailyBlocked.includes(slot);
-        const btn = document.createElement('button');
-        btn.innerText = slot;
+    // Fetch blocked slots from Cloud
+    database.ref('blockedSlots/' + date).on('value', (snapshot) => {
+        const dailyBlocked = snapshot.val() || [];
+        container.innerHTML = "";
         
-        // Styling the button based on status
-        btn.style.padding = "10px";
-        btn.style.borderRadius = "8px";
-        btn.style.border = "none";
-        btn.style.cursor = "pointer";
-        btn.style.fontWeight = "bold";
-        btn.style.transition = "0.3s";
-        
-        if (isBlocked) {
-            btn.style.background = "#ef4444"; // Red for Blocked
-            btn.style.color = "white";
-        } else {
-            btn.style.background = "rgba(56, 189, 248, 0.1)"; // Blue tint for Available
-            btn.style.color = "#38bdf8";
-            btn.style.border = "1px solid #38bdf8";
-        }
+        allClinicSlots.forEach(slot => {
+            const isBlocked = dailyBlocked.includes(slot);
+            const btn = document.createElement('button');
+            btn.innerText = slot;
+            
+            btn.style.padding = "10px";
+            btn.style.borderRadius = "8px";
+            btn.style.border = "none";
+            btn.style.cursor = "pointer";
+            btn.style.fontWeight = "bold";
+            btn.style.transition = "0.3s";
+            
+            if (isBlocked) {
+                btn.style.background = "#ef4444"; 
+                btn.style.color = "white";
+            } else {
+                btn.style.background = "rgba(56, 189, 248, 0.1)"; 
+                btn.style.color = "#38bdf8";
+                btn.style.border = "1px solid #38bdf8";
+            }
 
-        btn.onclick = () => toggleSlot(date, slot);
-        container.appendChild(btn);
+            btn.onclick = () => toggleSlot(date, slot, dailyBlocked);
+            container.appendChild(btn);
+        });
     });
 };
 
-window.toggleSlot = function(date, slot) {
-    let blockedData = JSON.parse(localStorage.getItem('blockedSlots')) || {};
-    if (!blockedData[date]) blockedData[date] = [];
+window.toggleSlot = function(date, slot, currentBlocked) {
+    let updatedBlocked = currentBlocked.includes(slot) 
+        ? currentBlocked.filter(s => s !== slot) 
+        : [...currentBlocked, slot];
 
-    if (blockedData[date].includes(slot)) {
-        // Unblock
-        blockedData[date] = blockedData[date].filter(s => s !== slot);
-    } else {
-        // Block
-        blockedData[date].push(slot);
-    }
-
-    localStorage.setItem('blockedSlots', JSON.stringify(blockedData));
-    loadAvailability(); // Refresh UI
+    // Update Cloud
+    database.ref('blockedSlots/' + date).set(updatedBlocked);
 };
 
 // 4. Patient Table Rendering
-function renderTable(filteredData = null) {
+function renderTable(dataToDisplay) {
     const tableBody = document.getElementById('appointmentTableBody');
-    const allAppointments = JSON.parse(localStorage.getItem('apexAppointments')) || [];
-    const dataToDisplay = filteredData || allAppointments;
+    if (!tableBody) return;
 
     document.getElementById('totalCount').innerText = dataToDisplay.length;
     tableBody.innerHTML = "";
 
-    dataToDisplay.forEach((app, index) => {
+    // Sort by date (closest first)
+    dataToDisplay.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    dataToDisplay.forEach((app) => {
         const isDone = app.status === "Completed";
         const row = document.createElement('tr');
         if (isDone) row.classList.add('row-completed');
@@ -114,25 +118,26 @@ function renderTable(filteredData = null) {
             <td>${app.report ? `<a href="${app.report}" target="_blank" style="color: #38bdf8;">VIEW</a>` : 'NONE'}</td>
             <td>
                 ${isDone ? `<span class="status-badge status-done">✓ Visited</span>` : 
-                `<button class="btn-action" onclick="markAsDone(${index})">MARK DONE</button>`}
+                `<button class="btn-action" onclick="markAsDone('${app.firebaseId}')">MARK DONE</button>`}
             </td>
         `;
         tableBody.appendChild(row);
     });
 }
 
-// 5. Action Functions
-window.markAsDone = function(index) {
-    let allAppointments = JSON.parse(localStorage.getItem('apexAppointments')) || [];
-    allAppointments[index].status = "Completed";
-    localStorage.setItem('apexAppointments', JSON.stringify(allAppointments));
-    renderTable();
+// 5. Action Functions (Firebase Sync)
+window.markAsDone = function(firebaseId) {
+    database.ref('appointments/' + firebaseId).update({
+        status: "Completed"
+    });
+    // The table will auto-refresh due to the .on('value') listener
 };
 
 window.searchPatients = function() {
     const term = document.getElementById('searchInput').value.toLowerCase();
-    const all = JSON.parse(localStorage.getItem('apexAppointments')) || [];
-    const filtered = all.filter(a => a.name.toLowerCase().includes(term) || a.phone.includes(term));
+    const filtered = window.allAppts.filter(a => 
+        a.name.toLowerCase().includes(term) || a.phone.includes(term)
+    );
     renderTable(filtered);
 };
 
