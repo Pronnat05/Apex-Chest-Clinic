@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Chest Clinic | Dr. Gaurav</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Specific CSS to ensure the background flows correctly through all sections */
+        body {
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                        url('image_14c83f.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f8fafc;
+            margin: 0;
+        }
+
+        /* Fixing the 'Half-White' issue by making sections transparent */
+        section, #about-doctor {
+            background: transparent !important;
+            border: none !important;
+        }
+
+        /* Glassmorphism for the booking container */
+        .booking-container {
+            background: rgba(255, 255, 255, 0.05) !important;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 24px;
+        }
+
+        .info-panel {
+            background: rgba(30, 64, 175, 0.3) !important;
+        }
+
+        input, .slot {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .slot:hover, .slot.active {
+            background: #38bdf8 !important;
+            color: #0f172a !important;
+        }
+
+        /* Bullet point styling */
+        .details-list {
+            list-style: none;
+            padding: 0;
+        }
+        .details-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+        .details-list li::before {
+            content: "•";
+            color: #38bdf8;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" style="background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+        <div class="logo" style="display: flex; align-items: center; gap: 15px;">
+            <img src="logo.png" alt="Apex Logo" style="height: 55px; width: auto;">
+            <div style="font-weight: 700; color: #38bdf8; font-size: 1.5rem;">
+                Apex <span style="color: #f8fafc; font-weight: 400;">Chest Clinic</span>
+            </div>
+        </div>
+        
+        <div class="nav-links" style="display: flex; gap: 30px; align-items: center;">
+            <a href="#about-doctor" style="text-decoration: none; color: #f8fafc; font-weight: 600; font-size: 0.9rem;">About the Doctor</a>
+            <a href="login.html" class="btn-login" style="border: 2px solid #38bdf8; color: #38bdf8; padding: 8px 20px; border-radius: 50px; text-decoration: none;">Doctor Login</a>
+        </div>
+    </nav>
+
+    <header class="hero" style="text-align: center; padding: 100px 5%;">
+        <h1 style="font-size: 3.5rem; color: #f8fafc; margin-bottom: 20px;">Advanced Respiratory Care</h1>
+        <p style="font-size: 1.2rem; color: #cbd5e1; max-width: 700px; margin: 0 auto 30px;">Expert diagnosis and treatment for asthma, allergy, and lung disorders.</p>
+        <a href="#booking-section" class="btn-submit" style="text-decoration: none; display: inline-block; width: auto; padding: 15px 40px; background: #38bdf8; color: #0f172a; font-weight: 700; border-radius: 10px;">Schedule an Appointment</a>
+    </header>
+
+    <section id="about-doctor" style="padding: 100px 5%;">
+        <div style="max-width: 1100px; margin: 0 auto; display: flex; gap: 60px; align-items: center; flex-wrap: wrap;">
+            
+            <div style="flex: 1; min-width: 320px;">
+                <div style="width: 100%; height: 550px; border-radius: 24px; overflow: hidden; border: 3px solid #38bdf8; box-shadow: 0 0 30px rgba(56, 189, 248, 0.2);">
+                    <img src="gaurav.png" alt="Dr. Gaurav" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                </div>
+            </div>
+
+            <div style="flex: 1.5; min-width: 320px;">
+                <h4 style="color: #38bdf8; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; font-weight: 700;">Chief Pulmonologist</h4>
+                <h2 style="font-size: 3rem; color: #f8fafc; margin-bottom: 20px;">Dr. GAURAV</h2>
+                
+                <p style="color: #cbd5e1; line-height: 1.8; margin-bottom: 30px; font-size: 1.1rem;">
+                   Dr. Gaurav – Best Consultant in Patna for Advanced Respiratory Medicine is an accomplished specialist with strong expertise in managing complex respiratory disorders. He holds MBBS (RGUHS) and DNB (Respiratory Medicine) qualifications, along with advanced certifications including BCME. 
+                   His clinical skills include interventional respiratory procedures, diagnosis and treatment of lung diseases, and advanced pulmonary care and expertise in Critical care patient management. Recognized with multiple awards of appreciation at NAPCON, Dr. Gaurav is also an active member of the Indian Chest Society (ICS). He is committed to delivering precise, compassionate, and evidence-based treatment for patients with respiratory and pulmonary conditions.
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <h4 style="color: #38bdf8; margin-bottom: 10px; font-size: 1.1rem;">🎓 Education</h4>
+                        <ul class="details-list">
+                            <li>MBBS (RGUHS)</li>
+                            <li>DNB (Respiratory Med)</li>
+                            
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #38bdf8; margin-bottom: 10px; font-size: 1.1rem;">🏆 Achievements</h4>
+                        <ul class="details-list">
+                            <li>Appreciation Award at Napcon</li>
+                            <li>BCME Certified Specialist</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #38bdf8; margin-bottom: 10px; font-size: 1.1rem;">🏢 Experience</h4>
+                        <ul class="details-list">
+                            <li>3+ Years Clinical Excellence</li>
+                            <li>Senior Resident, AIIMS</li>
+                            <li>Fortis Hospital, Noida Sec-62</li>
+                            <li>Asst. Professor, NMCH JNU</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #38bdf8; margin-bottom: 10px; font-size: 1.1rem;">🌟 Expertise</h4>
+                        <ul class="details-list">
+                            <li>Interventional Pulmonology</li>
+                            <li>Advanced Pulmonary Care</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="booking-section" class="booking-container" style="margin: 80px auto; max-width: 1100px;">
+        <div class="info-panel" style="padding: 50px;">
+            <h2 style="color: #f8fafc;">Book Appointment</h2>
+            <p style="color: #bae6fd; margin-bottom: 40px;">Select your preferred time slot for a detailed consultation.</p>
+            
+            <div class="contact-details" style="font-size: 0.95rem; color: #f8fafc;">
+                <p>📍 Rukanpura 200m West Of Nagarmal, Leela Complex, Ground Floor, Bailey Road, Patna-801506</p>
+                <br>
+                <p>📞 Emergency: +91 63729 82449</p>
+                <br>
+                <p>⏰ 8:00 AM - 10:00 AM<br>&nbsp;&nbsp;&nbsp;&nbsp;4:00 PM - 8:00 PM</p>
+            </div>
+        </div>
+
+        <form class="booking-form" id="appointmentForm" style="padding: 50px;">
+            <div class="form-group">
+                <label style="color: #38bdf8; font-weight: 600;">Full Name</label>
+                <input type="text" id="p-name" placeholder="Patient's full name" required>
+            </div>
+
+            <div style="display: flex; gap: 20px;">
+                <div class="form-group" style="flex: 1;">
+                    <label style="color: #38bdf8; font-weight: 600;">Phone Number</label>
+                    <input type="tel" id="p-phone" placeholder="Mobile number" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label style="color: #38bdf8; font-weight: 600;">Preferred Date</label>
+                    <input type="date" id="p-date" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label style="color: #38bdf8; font-weight: 600;">Lab Reports (PDF/Image)</label>
+                <input type="file" id="p-report" accept=".pdf, .jpg, .jpeg, .png">
+            </div>
+
+            <div class="form-group">
+                <label style="color: #38bdf8; font-weight: 600;">Available Time Slots</label>
+                <div class="time-slots" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;">
+                    <button type="button" class="slot">08:00 AM</button>
+                    <button type="button" class="slot">08:30 AM</button>
+                    <button type="button" class="slot">09:00 AM</button>
+                    <button type="button" class="slot">09:30 AM</button>
+                    <button type="button" class="slot">10:00 AM</button>
+                    <button type="button" class="slot">05:00 PM</button>
+                    <button type="button" class="slot">06:00 PM</button>
+                    <button type="button" class="slot">07:00 PM</button>
+                    <button type="button" class="slot">08:00 PM</button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" style="width: 100%; padding: 15px; background: #38bdf8; color: #0f172a; border: none; font-weight: 700; border-radius: 10px; cursor: pointer;">Confirm Appointment</button>
+        </form>
+    </section>
+
+    <div id="successModal" class="modal-overlay" style="display: none;">
+        <div class="modal-card" style="background: #1e293b; color: white; padding: 40px; border-radius: 20px; text-align: center;">
+            <div class="modal-icon" style="background: #38bdf8; color: #0f172a; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 24px;">✓</div>
+            <h2>Booking Successful!</h2>
+            <p id="modalDetails" style="color: #cbd5e1; margin: 15px 0;"></p>
+            <button onclick="closeModal()" class="btn-modal-close" style="background: #38bdf8; color: #0f172a; border: none; padding: 10px 30px; border-radius: 8px; font-weight: 600; cursor: pointer;">Done</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
