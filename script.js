@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedDate = dateInput.value;
         if (!selectedDate) return;
 
-        // Reset all slots to default state first
+        
         slots.forEach(slot => {
             slot.classList.remove('booked');
             slot.classList.remove('active');
@@ -137,4 +137,5 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
 
