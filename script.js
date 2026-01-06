@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalDetails = document.getElementById('modalDetails');
     let selectedSlotText = "";
 
-    // 1. Function to Check and Disable Slots (Cloud-Sync)
+    
     function updateSlotAvailability() {
         const selectedDate = dateInput.value;
         if (!selectedDate) return;
@@ -22,16 +22,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // FETCH FROM FIREBASE: Appointments
+        
         database.ref('appointments').orderByChild('date').equalTo(selectedDate).on('value', (snapshot) => {
             const appointments = snapshot.val() || {};
             const bookedTimes = Object.values(appointments).map(a => a.slot);
 
-            // FETCH FROM FIREBASE: Doctor Blocked Slots
+           
             database.ref('blockedSlots/' + selectedDate).on('value', (blockSnapshot) => {
                 const dailyBlocked = blockSnapshot.val() || [];
 
-                // Loop through slots to apply restrictions
+                
                 slots.forEach(slot => {
                     const slotTime = slot.innerText.trim();
                     
@@ -53,10 +53,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 2. Refresh slots when the date changes
+    
     dateInput.addEventListener('change', updateSlotAvailability);
 
-    // 3. Slot Selection Logic
+    
     slots.forEach(slot => {
         slot.addEventListener('click', function() {
             if (this.classList.contains('booked')) return;
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 4. Form Submission Logic
+   
     if (bookingForm) {
         bookingForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -92,14 +92,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 };
 
-                // SAVE TO FIREBASE instead of LocalStorage
+                
                 database.ref('appointments').push(newAppointment)
                     .then(() => {
-                        // Show Success Modal
+                        
                         modalDetails.innerText = `Confirmed for ${name} on ${date} at ${selectedSlotText}.`;
                         modal.style.display = 'flex';
 
-                        // Reset Form
+                        
                         bookingForm.reset();
                         selectedSlotText = "";
                         updateSlotAvailability();
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
-// Smooth Scrolling Logic
+
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -137,3 +137,4 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
