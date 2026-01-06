@@ -1,31 +1,28 @@
-/* 1. GLOBAL SETTINGS & BACKGROUND FIX */
-/* 1. Global Smoothness */
+
 html {
     scroll-behavior: smooth;
-    /* This ensures that when you click 'Schedule', the heading isn't hidden under the navbar */
+    
     scroll-padding-top: 80px; 
 }
 
 body {
-    /* Enables momentum scrolling on iOS devices */
+    
     -webkit-overflow-scrolling: touch;
     line-height: 1.6;
-    overflow-x: hidden; /* Prevents awkward side-shaking on mobile */
+    overflow-x: hidden; 
 }
 
-/* 2. Transition Effects for Buttons and Slots */
-/* Adding a 'cubic-bezier' makes the hover effects feel more organic */
+
 .slot, .btn-submit, .btn-action, .btn-login {
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* 3. Smooth Fade-in for Sections (Optional but Recommended) */
+
 section {
     opacity: 1;
     transition: opacity 0.6s ease-out;
 }
 
-/* 4. Scrollbar Styling (Makes the side-scroll look premium) */
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -55,7 +52,7 @@ html {
 }
 
 body {
-    /* Fixed background to prevent the "half-white" issue */
+    
     background: 
         linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
         url('image_14c83f.jpg');
@@ -67,14 +64,13 @@ body {
     margin: 0;
 }
 
-/* 2. TRANSPARENCY FIX FOR SECTIONS */
 section, #about-doctor {
-    background: transparent !important; /* Removes the white background layers */
+    background: transparent !important; 
     padding: 80px 5%;
     border: none !important;
 }
 
-/* 3. NAVIGATION BAR */
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -102,7 +98,7 @@ section, #about-doctor {
     color: #0f172a;
 }
 
-/* 4. HERO SECTION */
+
 .hero {
     text-align: center;
     padding: 100px 5%;
@@ -116,7 +112,7 @@ section, #about-doctor {
     text-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* 5. GLASSMORPHISM CARDS */
+
 .booking-container {
     display: flex;
     max-width: 1100px;
@@ -141,7 +137,7 @@ section, #about-doctor {
     width: 65%;
 }
 
-/* 6. FORM ELEMENTS */
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -164,7 +160,7 @@ input:focus {
     border-color: #38bdf8 !important;
 }
 
-/* 7. TIME SLOTS & BOOKING LOGIC */
+
 .time-slots {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -196,7 +192,7 @@ input:focus {
     border-color: #38bdf8;
 }
 
-/* THE "BOOKED" SLOT STYLE */
+
 .slot.booked {
     background: rgba(239, 68, 68, 0.15) !important;
     border: 1px solid rgba(239, 68, 68, 0.4) !important;
@@ -216,7 +212,7 @@ input:focus {
     font-weight: bold;
 }
 
-/* 8. SUBMIT BUTTON */
+
 .btn-submit {
     width: 100%;
     padding: 15px;
@@ -236,7 +232,7 @@ input:focus {
     transform: translateY(-2px);
 }
 
-/* 9. MODALS */
+
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -266,10 +262,9 @@ input:focus {
     margin: 0 auto 20px;
     font-size: 24px;
 }
-/* --- MOBILE RESPONSIVENESS --- */
 
 @media (max-width: 768px) {
-    /* 1. Navigation */
+    
     .navbar {
         flex-direction: column;
         gap: 15px;
@@ -277,25 +272,25 @@ input:focus {
         text-align: center;
     }
 
-    /* 2. Hero Section */
+    
     .hero h1 {
-        font-size: 2.2rem; /* Smaller text for mobile */
+        font-size: 2.2rem; 
     }
 
     .hero p {
         font-size: 1rem;
     }
 
-    /* 3. About Doctor Section */
+   
     #about-doctor > div {
-        flex-direction: column !important; /* Stack image and text */
+        flex-direction: column !important; 
         gap: 30px !important;
     }
 
     #about-doctor img {
         width: 100% !important;
         height: auto !important;
-        max-width: 300px; /* Keep doctor photo at a reasonable size */
+        max-width: 300px; 
         margin: 0 auto;
     }
 
@@ -305,29 +300,29 @@ input:focus {
     }
 
     #about-doctor .details-list {
-        grid-template-columns: 1fr !important; /* 1 column for education/exp */
+        grid-template-columns: 1fr !important; 
     }
 
-    /* 4. Booking Container */
+    
     .booking-container {
-        flex-direction: column; /* Stack blue info panel and white form */
+        flex-direction: column; 
         margin: 20px;
         border-radius: 15px;
     }
 
     .info-panel, .booking-form {
-        width: 100% !important; /* Full width for both */
+        width: 100% !important; 
         padding: 25px !important;
     }
 
-    /* 5. Form Adjustments */
+    
     .form-row {
-        flex-direction: column; /* Phone and Date stack vertically */
+        flex-direction: column; 
         gap: 0px !important;
     }
 
     .time-slots {
-        grid-template-columns: repeat(3, 1fr); /* 3 buttons per row on mobile */
+        grid-template-columns: repeat(3, 1fr); 
         gap: 8px;
     }
 
@@ -336,8 +331,7 @@ input:focus {
         padding: 10px 5px;
     }
 
-    /* 6. Dashboard Tables */
-    /* This makes tables scrollable horizontally on small screens */
+   
     .table-card {
         margin: 10px;
         border-radius: 12px;
@@ -348,15 +342,16 @@ input:focus {
         font-size: 0.85rem;
     }
 
-    /* Adjust the Manage Availability buttons for fat-fingers */
+    
     .slot-grid {
         grid-template-columns: repeat(3, 1fr) !important;
     }
 }
 
-/* Extra small screens (Phones under 400px) */
+
 @media (max-width: 480px) {
     .time-slots, .slot-grid {
         grid-template-columns: repeat(2, 1fr) !important;
     }
+
 }
