@@ -22,12 +22,12 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    // Use 'var' to ensure it's globally accessible to script.js
+   
     var database = firebase.database(); 
 </script>
     <style>
 
-        /* Specific CSS to ensure the background flows correctly through all sections */
+       
         body {
             background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
                         url('image_14c83f.jpg');
@@ -38,13 +38,13 @@
             margin: 0;
         }
 
-        /* Fixing the 'Half-White' issue by making sections transparent */
+       
         section, #about-doctor {
             background: transparent !important;
             border: none !important;
         }
 
-        /* Glassmorphism for the booking container */
+      
         .booking-container {
             background: rgba(255, 255, 255, 0.05) !important;
             backdrop-filter: blur(15px);
@@ -67,7 +67,7 @@
             color: #0f172a !important;
         }
 
-        /* Bullet point styling */
+      
         .details-list {
             list-style: none;
             padding: 0;
@@ -249,4 +249,5 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
