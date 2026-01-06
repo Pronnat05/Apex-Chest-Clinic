@@ -1,4 +1,4 @@
-// 1. Configuration & Security
+
 if (localStorage.getItem('isDoctorLoggedIn') !== 'true') {
     window.location.href = "login.html";
 }
@@ -6,10 +6,10 @@ if (localStorage.getItem('isDoctorLoggedIn') !== 'true') {
 const allClinicSlots = ["08:00 AM", "08:30 AM", "09:00 AM", "09:30 AM", "10:00 AM", "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM", "07:00 PM", "07:30 PM", "08:00 PM"];
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Check for midnight cleanup logic (locally managed but affects cloud visibility)
+   
     autoClearOldVisitedPatients();
     
-    // Set Date Display
+  
     const dateDisplay = document.getElementById('currentDate');
     if (dateDisplay) {
         dateDisplay.innerText = new Date().toLocaleDateString('en-GB', {
@@ -22,38 +22,36 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.setItem('welcomeShown', 'true');
     }
 
-    // FIREBASE REAL-TIME LISTENER: Fetch Appointments
     database.ref('appointments').on('value', (snapshot) => {
         const data = snapshot.val();
         let appts = [];
         for (let id in data) {
             appts.push({ firebaseId: id, ...data[id] });
         }
-        // Store locally for search filtering without refetching
+      
         window.allAppts = appts;
         renderTable(appts);
     });
 });
 
-// 2. Midnight Cleanup Logic (Cloud Aware)
+
 function autoClearOldVisitedPatients() {
     const today = new Date().toISOString().split('T')[0];
     const lastCleanup = localStorage.getItem('lastCleanupDate');
 
     if (lastCleanup !== today) {
-        // We only clear "Completed" status from our view, 
-        // but for a clean dashboard, we can simply update the cleanup date locally.
+        
+        
         localStorage.setItem('lastCleanupDate', today);
     }
 }
 
-// 3. Slot Availability Manager (Firebase Integrated)
 window.loadAvailability = function() {
     const date = document.getElementById('manage-date').value;
     const container = document.getElementById('slot-manager-container');
     if (!date) return;
 
-    // Fetch blocked slots from Cloud
+    
     database.ref('blockedSlots/' + date).on('value', (snapshot) => {
         const dailyBlocked = snapshot.val() || [];
         container.innerHTML = "";
@@ -90,11 +88,11 @@ window.toggleSlot = function(date, slot, currentBlocked) {
         ? currentBlocked.filter(s => s !== slot) 
         : [...currentBlocked, slot];
 
-    // Update Cloud
+    
     database.ref('blockedSlots/' + date).set(updatedBlocked);
 };
 
-// 4. Patient Table Rendering
+
 function renderTable(dataToDisplay) {
     const tableBody = document.getElementById('appointmentTableBody');
     if (!tableBody) return;
@@ -102,7 +100,7 @@ function renderTable(dataToDisplay) {
     document.getElementById('totalCount').innerText = dataToDisplay.length;
     tableBody.innerHTML = "";
 
-    // Sort by date (closest first)
+    
     dataToDisplay.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     dataToDisplay.forEach((app) => {
@@ -125,12 +123,12 @@ function renderTable(dataToDisplay) {
     });
 }
 
-// 5. Action Functions (Firebase Sync)
+
 window.markAsDone = function(firebaseId) {
     database.ref('appointments/' + firebaseId).update({
         status: "Completed"
     });
-    // The table will auto-refresh due to the .on('value') listener
+    
 };
 
 window.searchPatients = function() {
@@ -149,3 +147,4 @@ window.logout = function() {
 window.closeDoctorModal = function() {
     document.getElementById('doctorWelcomeModal').style.display = 'none';
 };
+
